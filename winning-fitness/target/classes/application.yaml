@@ -1,0 +1,10 @@
+spring:
+   datasource:
+      username: winning_fitness
+      password: winning_fitness
+      url: jdbc:mysql://localhost:3306/winning_fitness
+      
+   jpa:
+      hibernate:
+         ddl-auto: create
+      show-sql: true
