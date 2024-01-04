@@ -18,8 +18,8 @@ public class FitnessCoach {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long fitnessCoachId;
 	
-	private String fitnessCoachfirstName;
-	private String fitnessCoachlastName;
+	private String fitnessCoachFirstName;
+	private String fitnessCoachLastName;
 	private String fitnessCoachemail;
 	private String fitnessCoachPhone;
 	private String fitnessCoachSpecialty;
