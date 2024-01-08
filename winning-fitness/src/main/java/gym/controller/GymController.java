@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import gym.controller.model.GymData;
+import gym.controller.model.GymData.GymFitnessCoach;
 import gym.service.GymService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,11 +33,25 @@ public class GymController {
 		return gymService.saveGym(gymData);
 	}
 	
+	/*
+	 * Update Gym
+	 */
 	@PutMapping("gym/{gymId}")
 	public GymData updateGym(@PathVariable Long gymId, @RequestBody GymData gymData) {
 		gymData.setGymId(gymId);
 		log.info("Updating Gym ID= " + gymId);
 		
 		return gymService.saveGym(gymData);
+	}
+	
+	/*
+	 * Add Employee
+	 */
+	@PostMapping("gym/{gymId}/fitness_coach")
+	@ResponseStatus(code = HttpStatus.CREATED)
+	public GymFitnessCoach addEmployee(@PathVariable Long gymId, @RequestBody GymFitnessCoach gymFitnessCoach) {
+		log.info("Adding Fitness Coach ID= " + gymFitnessCoach + ", to Gym ID= " + gymId);
+		
+		return gymService.saveFitnessCoach(gymId, gymFitnessCoach);
 	}
 }
