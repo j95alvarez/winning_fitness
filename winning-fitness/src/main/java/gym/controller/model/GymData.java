@@ -29,14 +29,14 @@ private Long gymId;
 		private Long memberId;
 		
 		private String memberFirstName;
-		private String membeLastName;
+		private String memberLastName;
 		private String memberEmail;
 		private String memberPhone;
 		
 		public GymMember(Member member) {
 			this.memberId = member.getMemberId();
 			this.memberFirstName = member.getMemberFirstName();
-			this.membeLastName = member.getMembeLastName();
+			this.memberLastName = member.getMemberLastName();
 			this.memberEmail = member.getMemberEmail();
 			this.memberPhone = member.getMemberPhone();
 		}
@@ -48,17 +48,17 @@ private Long gymId;
 	public static class GymFitnessCoach {
 		private Long fitnessCoachId;
 		
-		private String fitnessCoachfirstName;
+		private String fitnessCoachFirstName;
 		private String fitnessCoachLastName;
-		private String fitnessCoachemail;
+		private String fitnessCoachEmail;
 		private String fitnessCoachPhone;
 		private String fitnessCoachSpecialty;
 		
 		public GymFitnessCoach(FitnessCoach fitnessCoach) {
 			this.fitnessCoachId = fitnessCoach.getFitnessCoachId();
-			this.fitnessCoachfirstName = fitnessCoach.getFitnessCoachFirstName();
+			this.fitnessCoachFirstName = fitnessCoach.getFitnessCoachFirstName();
 			this.fitnessCoachLastName = fitnessCoach.getFitnessCoachLastName();
-			this.fitnessCoachemail = fitnessCoach.getFitnessCoachemail();
+			this.fitnessCoachEmail = fitnessCoach.getFitnessCoachemail();
 			this.fitnessCoachPhone = fitnessCoach.getFitnessCoachPhone();
 			this.fitnessCoachSpecialty = fitnessCoach.getFitnessCoachSpecialty();
 		}
