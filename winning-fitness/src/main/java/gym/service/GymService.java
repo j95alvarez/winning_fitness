@@ -4,13 +4,17 @@ import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import gym.controller.model.GymData;
 import gym.controller.model.GymData.GymFitnessCoach;
+import gym.controller.model.GymData.GymMember;
 import gym.dao.FitnessCoachDao;
 import gym.dao.GymDao;
+import gym.dao.MemberDao;
 import gym.entity.FitnessCoach;
 import gym.entity.Gym;
+import gym.entity.Member;
 
 @Service
 public class GymService {
@@ -19,6 +23,9 @@ public class GymService {
 	
 	@Autowired
 	private FitnessCoachDao fitnessCoachDao;
+	
+	@Autowired
+	private MemberDao memberDao;
 	
 
 	/*
@@ -53,6 +60,7 @@ public class GymService {
 	/*
 	 * FitnessCoach Services
 	 */
+	@Transactional(readOnly = false)
 	public GymFitnessCoach saveFitnessCoach(Long gymId, GymFitnessCoach gymFitnessCoach) {
 		// TODO Auto-generated method stub
 		Gym gym = findOrCreateGym(gymId);
@@ -95,6 +103,51 @@ public class GymService {
 		else
 			throw new IllegalArgumentException("Employee ID= " + fitnessCoachId + " is not in Gym ID= " + gymId);
 	}
+
+	/*
+	 * Member Services
+	 */
+	@Transactional(readOnly = false)
+	public GymMember saveMember(Long gymId, GymMember gymMember) {
+		// TODO Auto-generated method stub
+		Gym gym = findOrCreateGym(gymId);
+		Long memberId = gymMember.getMemberId();
+		Member member = findOrCreateMember(gymId, memberId);
+		
+		copyGymMemberFields(member, gymMember);
+		
+		member.getGyms().add(gym);
+		gym.getMembers().add(member);
+		
+		return new GymMember(memberDao.save(member));
+	}
 	
+	private void copyGymMemberFields(Member member, GymMember gymMember) {
+		// TODO Auto-generated method stub
+		member.setMemberFirstName(gymMember.getMemberFirstName());
+		member.setMemberLastName(gymMember.getMemberLastName());
+		member.setMemberEmail(gymMember.getMemberEmail());
+		member.setMemberPhone(gymMember.getMemberPhone());
+		member.setMemberId(gymMember.getMemberId());
+	}
+
+	private Member findOrCreateMember(Long gymId, Long memberId) {
+		if (memberId == null) 
+			return new Member();
+		else
+			return findMemberById(gymId, memberId);
+	}
+
+	private Member findMemberById(Long gymId, Long memberId) {
+		// TODO Auto-generated method stub
+		Member member = memberDao.findById(memberId).orElseThrow(
+				() -> new NoSuchElementException("Member ID= " + memberId + " was not found!"));
+		
+		for (Gym gym : member.getGyms())
+			if (gym.getGymId().equals(gymId))
+				return member;
+		
+		throw new IllegalArgumentException("Member ID= " + memberId + " is not in Gym ID= " + gymId);
+	}
 	
 }

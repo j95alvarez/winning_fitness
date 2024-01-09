@@ -21,7 +21,7 @@ public class Member {
 	private Long memberId;
 	
 	private String memberFirstName;
-	private String membeLastName;
+	private String memberLastName;
 	private String memberEmail;
 	private String memberPhone;
 	

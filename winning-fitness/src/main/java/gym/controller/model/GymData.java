@@ -29,14 +29,14 @@ private Long gymId;
 		private Long memberId;
 		
 		private String memberFirstName;
-		private String membeLastName;
+		private String memberLastName;
 		private String memberEmail;
 		private String memberPhone;
 		
 		public GymMember(Member member) {
 			this.memberId = member.getMemberId();
 			this.memberFirstName = member.getMemberFirstName();
-			this.membeLastName = member.getMembeLastName();
+			this.memberLastName = member.getMemberLastName();
 			this.memberEmail = member.getMemberEmail();
 			this.memberPhone = member.getMemberPhone();
 		}
