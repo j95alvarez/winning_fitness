@@ -1,5 +1,7 @@
 package gym.service;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -148,6 +150,59 @@ public class GymService {
 				return member;
 		
 		throw new IllegalArgumentException("Member ID= " + memberId + " is not in Gym ID= " + gymId);
+	}
+	
+	/*
+	 * Retrieve all gyms
+	 */
+	@Transactional(readOnly = true)
+	public List<GymData> retrieveAllGyms() {
+		// TODO Auto-generated method stub
+		List<Gym> gyms = gymDao.findAll();
+		List<GymData> result = new LinkedList<>();
+		
+		for (Gym gym : gyms) {
+			GymData gymData = new GymData(gym);
+			
+			gymData.getMembers().clear();
+			gymData.getFitnessCoaches().clear();
+			
+			result.add(gymData);
+		}
+		
+		return result;
+	}
+
+	/*
+	 * Get Gym By ID
+	 */
+	@Transactional(readOnly = true)
+	public GymData getGymById(Long gymId) {
+		// TODO Auto-generated method stub
+		GymData gymData = new GymData();
+		
+		Gym gym = findOrCreateGym(gymId);
+		
+		if (gym != null) {
+			gymData.setGymId(gym.getGymId());
+			gymData.setGymName(gym.getGymName());
+			gymData.setGymAddress(gym.getGymAddress());
+			gymData.setGymCity(gym.getGymCity());
+			gymData.setGymZipcode(gym.getGymZipcode());
+			gymData.setGymPhone(gym.getGymPhone());
+		}
+		return gymData;
+	}
+
+	/*
+	 * Delete Gym by ID
+	 */
+	@Transactional(readOnly = false)
+	public void deleteGymById(Long gymId) {
+		// TODO Auto-generated method stub
+		Gym gym = findOrCreateGym(gymId);
+		
+		gymDao.delete(gym);
 	}
 	
 }

@@ -1,7 +1,12 @@
 package gym.controller;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -37,7 +42,7 @@ public class GymController {
 	/*
 	 * Update Gym
 	 */
-	@PutMapping("gym/{gymId}")
+	@PutMapping("/gym/{gymId}")
 	public GymData updateGym(@PathVariable Long gymId, @RequestBody GymData gymData) {
 		gymData.setGymId(gymId);
 		log.info("Updating Gym ID= " + gymId);
@@ -48,7 +53,7 @@ public class GymController {
 	/*
 	 * Add FitnessCoach
 	 */
-	@PostMapping("gym/{gymId}/fitness_coach")
+	@PostMapping("/gym/{gymId}/fitness_coach")
 	@ResponseStatus(code = HttpStatus.CREATED)
 	public GymFitnessCoach addEmployee(@PathVariable Long gymId, @RequestBody GymFitnessCoach gymFitnessCoach) {
 		log.info("Adding Fitness Coach ID= " + gymFitnessCoach.getFitnessCoachId() + ", to Gym ID= " + gymId);
@@ -59,11 +64,43 @@ public class GymController {
 	/*
 	 * Add Member
 	 */
-	@PostMapping("gym/{gymId}/member")
+	@PostMapping("/gym/{gymId}/member")
 	@ResponseStatus(code = HttpStatus.CREATED)
 	public GymMember addMember(@PathVariable Long gymId, @RequestBody GymMember gymMember) {
 		log.info("Adding Member ID= " + gymMember.getMemberId() + " to Gym ID= " + gymId);
 		
 		return gymService.saveMember(gymId, gymMember);
+	}
+	
+	/*
+	 * Retrieve all Gyms
+	 */
+	@GetMapping("/gym")
+	public List<GymData> retrieveAllGyms() {
+		log.info("Retrieving all gyms");
+		
+		return gymService.retrieveAllGyms();
+	}
+	
+	/*
+	 * Retrieve Gym by ID
+	 */
+	@GetMapping("/gym/{gymId}")
+	public GymData getGymById(@PathVariable Long gymId) {
+		log.info("Retrieving Gym ID= " + gymId);
+		
+		return gymService.getGymById(gymId);
+	}
+	
+	/*
+	 * Delete Gym by ID
+	 */
+	@DeleteMapping("/gym/{gymId}")
+	public Map<String, String> deleteGymById(@PathVariable Long gymId) {
+		log.info("Deleting Gym ID= " + gymId);
+		
+		gymService.deleteGymById(gymId);
+		
+		return Map.of("message", "Success in deleting Gym ID= " + gymId);
 	}
 }
