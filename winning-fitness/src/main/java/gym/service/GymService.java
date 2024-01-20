@@ -3,6 +3,7 @@ package gym.service;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -85,6 +86,7 @@ public class GymService {
 		fitnessCoach.setFitnessCoachPhone(gymFitnessCoach.getFitnessCoachPhone());
 		fitnessCoach.setFitnessCoachSpecialty(gymFitnessCoach.getFitnessCoachSpecialty());
 		fitnessCoach.setFitnessCoachId(gymFitnessCoach.getFitnessCoachId());
+		fitnessCoach.setBooked(gymFitnessCoach.isBooked());
 	}
 
 	private FitnessCoach findOrCreateFitnessCoach(Long gymId, Long fitnessCoachId) {
@@ -100,10 +102,16 @@ public class GymService {
 		FitnessCoach fitnessCoach = fitnessCoachDao.findById(fitnessCoachId).orElseThrow(
 				() -> new NoSuchElementException("FitnessCoach ID= " + fitnessCoachId + " was not found!"));
 		
+		if (fitnessCoach.getGym().getGymId() != gymId)
+			throw new IllegalArgumentException("Employee ID= " + fitnessCoachId + " is not in Gym ID= " + gymId);
+		
+		return fitnessCoach;
+		/*
 		if (fitnessCoach.getGym().getGymId().equals(gymId))
 			return fitnessCoach;
 		else
 			throw new IllegalArgumentException("Employee ID= " + fitnessCoachId + " is not in Gym ID= " + gymId);
+		*/
 	}
 
 	/*
@@ -204,5 +212,32 @@ public class GymService {
 		
 		gymDao.delete(gym);
 	}
+
+	/*
+	 * Book a Coach by ID
+	 */
+	@Transactional(readOnly = false)
+	public GymFitnessCoach bookACoach(Long gymId, Long fitnessCoachID, boolean booked) {
+		// TODO Auto-generated method stub
+		// Finds the Gym in which the user wants to book the next available FitnessCoach
+		FitnessCoach fitnessCoach = findOrCreateFitnessCoach(gymId, fitnessCoachID);
+		
+		fitnessCoach.setBooked(booked);
+		
+		return new GymFitnessCoach(fitnessCoachDao.save(fitnessCoach));
+		/*
+		// Iterate through the set until a coach is not booked
+		for (FitnessCoach fitnessCoach : gym.getFitnessCoaches()) {
+			
+			if (!fitnessCoach.isBooked()) {
+				// Set the status of the FitnessCoach to true
+				fitnessCoach.setBooked(booked);
+				return new GymFitnessCoach(fitnessCoachDao.save(fitnessCoach));
+			}
+		}
+		return null;
+		*/
+	}
+	
 	
 }

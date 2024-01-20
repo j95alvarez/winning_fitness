@@ -23,6 +23,7 @@ public class FitnessCoach {
 	private String fitnessCoachemail;
 	private String fitnessCoachPhone;
 	private String fitnessCoachSpecialty;
+	private boolean isBooked;
 	
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
