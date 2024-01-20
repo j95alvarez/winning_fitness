@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -55,7 +56,7 @@ public class GymController {
 	 */
 	@PostMapping("/gym/{gymId}/fitness_coach")
 	@ResponseStatus(code = HttpStatus.CREATED)
-	public GymFitnessCoach addEmployee(@PathVariable Long gymId, @RequestBody GymFitnessCoach gymFitnessCoach) {
+	public GymFitnessCoach addFitnessCoach(@PathVariable Long gymId, @RequestBody GymFitnessCoach gymFitnessCoach) {
 		log.info("Adding Fitness Coach ID= " + gymFitnessCoach.getFitnessCoachId() + ", to Gym ID= " + gymId);
 		
 		return gymService.saveFitnessCoach(gymId, gymFitnessCoach);
@@ -103,4 +104,15 @@ public class GymController {
 		
 		return Map.of("message", "Success in deleting Gym ID= " + gymId);
 	}
+	
+	@PatchMapping("/{gymId}/{fitnessCoachID}")
+	public GymFitnessCoach bookACoach(@PathVariable Long gymId, @PathVariable Long fitnessCoachID) {
+		// This will be used to set the booked status of the FitnessCoach
+		boolean booked = true;
+
+		log.info("Booking first available in Gym ID= " + gymId);
+		
+		return gymService.bookACoach(gymId, fitnessCoachID, booked);
+	}
+	
 }

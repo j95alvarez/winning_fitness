@@ -53,6 +53,7 @@ private Long gymId;
 		private String fitnessCoachEmail;
 		private String fitnessCoachPhone;
 		private String fitnessCoachSpecialty;
+		private boolean isBooked;
 		
 		public GymFitnessCoach(FitnessCoach fitnessCoach) {
 			this.fitnessCoachId = fitnessCoach.getFitnessCoachId();
@@ -61,6 +62,7 @@ private Long gymId;
 			this.fitnessCoachEmail = fitnessCoach.getFitnessCoachemail();
 			this.fitnessCoachPhone = fitnessCoach.getFitnessCoachPhone();
 			this.fitnessCoachSpecialty = fitnessCoach.getFitnessCoachSpecialty();
+			this.isBooked = fitnessCoach.isBooked();
 		}
 	}
 	
