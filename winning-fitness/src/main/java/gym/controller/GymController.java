@@ -115,4 +115,22 @@ public class GymController {
 		return gymService.bookACoach(gymId, fitnessCoachID, booked);
 	}
 	
+	@PatchMapping("/{gymId}")
+	public GymFitnessCoach bookARandomCoach(@PathVariable Long gymId) {
+		boolean booked = true;
+		log.info("Bookung a random Fitness Coach in Gym ID= " + gymId);
+		
+		return gymService.bookARandomCoach(gymId, booked);
+	}
+	
+	
+	/*
+	 * Retrieve all Gyms
+	 */
+	@GetMapping("/gym/{gymId}/")
+	public List<GymFitnessCoach> retrieveAllCoachesByGymId(@PathVariable Long gymId) {
+		log.info("Retrieving all Fitness Coaches in Gym ID= " + gymId);
+		
+		return gymService.retrieveAllFitnessCoachesByGymId(gymId);
+	}
 }
