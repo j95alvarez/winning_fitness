@@ -3,6 +3,7 @@ package gym.service;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Random;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,13 +38,14 @@ public class GymService {
 	public GymData saveGym(GymData gymData) {
 		// TODO Auto-generated method stub
 		Gym gym = findOrCreateGym(gymData.getGymId());
+		// Copies the fields of GymData to Gym
 		copyGymFields(gym, gymData);
 		
 		return new GymData(gymDao.save(gym));
 	}
 
 	private void copyGymFields(Gym gym, GymData gymData) {
-		// TODO Auto-generated method stub
+		// Copies the fields of GymData to Gym
 		gym.setGymName(gymData.getGymName());
 		gym.setGymAddress(gymData.getGymAddress());
 		gym.setGymCity(gymData.getGymCity());
@@ -52,7 +54,6 @@ public class GymService {
 	}
 
 	private Gym findOrCreateGym(Long gymId) {
-		// TODO Auto-generated method stub
 		if (gymId == null)
 			return new Gym();
 		else
@@ -65,11 +66,11 @@ public class GymService {
 	 */
 	@Transactional(readOnly = false)
 	public GymFitnessCoach saveFitnessCoach(Long gymId, GymFitnessCoach gymFitnessCoach) {
-		// TODO Auto-generated method stub
 		Gym gym = findOrCreateGym(gymId);
 		Long fitnessCoachId = gymFitnessCoach.getFitnessCoachId();
 		FitnessCoach fitnessCoach = findOrCreateFitnessCoach(gymId, fitnessCoachId);
 		
+		// Copies fields of GymFitnessCoach to FitnessCoach
 		copyFitnessCoachFields(fitnessCoach, gymFitnessCoach);
 		fitnessCoach.setGym(gym);
 		
@@ -79,7 +80,7 @@ public class GymService {
 	}
 
 	private void copyFitnessCoachFields(FitnessCoach fitnessCoach, GymFitnessCoach gymFitnessCoach) {
-		// TODO Auto-generated method stub
+		// Copies the fields of GymFitnessCoach to FitnessCoach
 		fitnessCoach.setFitnessCoachFirstName(gymFitnessCoach.getFitnessCoachFirstName());
 		fitnessCoach.setFitnessCoachLastName(gymFitnessCoach.getFitnessCoachLastName());
 		fitnessCoach.setFitnessCoachemail(gymFitnessCoach.getFitnessCoachEmail());
@@ -90,7 +91,6 @@ public class GymService {
 	}
 
 	private FitnessCoach findOrCreateFitnessCoach(Long gymId, Long fitnessCoachId) {
-		// TODO Auto-generated method stub
 		if (fitnessCoachId == null)
 			return new FitnessCoach();
 		else
@@ -98,20 +98,14 @@ public class GymService {
 	}
 
 	private FitnessCoach findFitnessCoachById(Long gymId, Long fitnessCoachId) {
-		// TODO Auto-generated method stub
 		FitnessCoach fitnessCoach = fitnessCoachDao.findById(fitnessCoachId).orElseThrow(
 				() -> new NoSuchElementException("FitnessCoach ID= " + fitnessCoachId + " was not found!"));
 		
+		// Searches through the gym and checks to see if the Fitness Coach belongs to the gym
 		if (fitnessCoach.getGym().getGymId() != gymId)
 			throw new IllegalArgumentException("Employee ID= " + fitnessCoachId + " is not in Gym ID= " + gymId);
 		
 		return fitnessCoach;
-		/*
-		if (fitnessCoach.getGym().getGymId().equals(gymId))
-			return fitnessCoach;
-		else
-			throw new IllegalArgumentException("Employee ID= " + fitnessCoachId + " is not in Gym ID= " + gymId);
-		*/
 	}
 
 	/*
@@ -119,21 +113,23 @@ public class GymService {
 	 */
 	@Transactional(readOnly = false)
 	public GymMember saveMember(Long gymId, GymMember gymMember) {
-		// TODO Auto-generated method stub
 		Gym gym = findOrCreateGym(gymId);
 		Long memberId = gymMember.getMemberId();
 		Member member = findOrCreateMember(gymId, memberId);
 		
+		// Copies the fields of GymMember into Member
 		copyGymMemberFields(member, gymMember);
 		
+		// Adds the Gym to the list of Gyms the member belongs too
 		member.getGyms().add(gym);
+		// Adds the member to the Gym
 		gym.getMembers().add(member);
 		
 		return new GymMember(memberDao.save(member));
 	}
 	
 	private void copyGymMemberFields(Member member, GymMember gymMember) {
-		// TODO Auto-generated method stub
+		// Copies the fields of GymMember to Member
 		member.setMemberFirstName(gymMember.getMemberFirstName());
 		member.setMemberLastName(gymMember.getMemberLastName());
 		member.setMemberEmail(gymMember.getMemberEmail());
@@ -149,10 +145,10 @@ public class GymService {
 	}
 
 	private Member findMemberById(Long gymId, Long memberId) {
-		// TODO Auto-generated method stub
 		Member member = memberDao.findById(memberId).orElseThrow(
 				() -> new NoSuchElementException("Member ID= " + memberId + " was not found!"));
 		
+		// Searches through the gym and checks to see if the member belongs to the gym
 		for (Gym gym : member.getGyms())
 			if (gym.getGymId().equals(gymId))
 				return member;
@@ -169,6 +165,7 @@ public class GymService {
 		List<Gym> gyms = gymDao.findAll();
 		List<GymData> result = new LinkedList<>();
 		
+		// Generates a list of all the gyms to retrieve
 		for (Gym gym : gyms) {
 			GymData gymData = new GymData(gym);
 			
@@ -191,6 +188,7 @@ public class GymService {
 		
 		Gym gym = findOrCreateGym(gymId);
 		
+		// If the gym is not null, it will copy the fields
 		if (gym != null) {
 			gymData.setGymId(gym.getGymId());
 			gymData.setGymName(gym.getGymName());
@@ -199,6 +197,7 @@ public class GymService {
 			gymData.setGymZipcode(gym.getGymZipcode());
 			gymData.setGymPhone(gym.getGymPhone());
 		}
+		
 		return gymData;
 	}
 
@@ -210,6 +209,7 @@ public class GymService {
 		// TODO Auto-generated method stub
 		Gym gym = findOrCreateGym(gymId);
 		
+		// Deletes the Gym table
 		gymDao.delete(gym);
 	}
 
@@ -219,25 +219,86 @@ public class GymService {
 	@Transactional(readOnly = false)
 	public GymFitnessCoach bookACoach(Long gymId, Long fitnessCoachID, boolean booked) {
 		// TODO Auto-generated method stub
-		// Finds the Gym in which the user wants to book the next available FitnessCoach
+		// Finds the Fitness Coach that the user wants to book
 		FitnessCoach fitnessCoach = findOrCreateFitnessCoach(gymId, fitnessCoachID);
 		
+		// Sets status of the Fitness Coach to booked
 		fitnessCoach.setBooked(booked);
 		
 		return new GymFitnessCoach(fitnessCoachDao.save(fitnessCoach));
-		/*
-		// Iterate through the set until a coach is not booked
-		for (FitnessCoach fitnessCoach : gym.getFitnessCoaches()) {
-			
-			if (!fitnessCoach.isBooked()) {
-				// Set the status of the FitnessCoach to true
-				fitnessCoach.setBooked(booked);
-				return new GymFitnessCoach(fitnessCoachDao.save(fitnessCoach));
+	}
+
+	@Transactional(readOnly = false)
+	public GymFitnessCoach bookARandomCoach(Long gymId, boolean booked) {
+		// TODO Auto-generated method stub
+
+		Random ran = new Random();
+
+		Gym gym = findOrCreateGym(gymId);
+		
+		// Retrieve the list of FitnessCoaches in the Gym, initialize the counter to 0,
+		// and chose a random index to iterate through the set in order to retrieve the
+		// Fitness Coach we are booking at Random
+		Set<FitnessCoach> fitnessCoaches = gym.getFitnessCoaches();
+		int count = 0;
+		int random_fitnessCoach_index = ran.nextInt(fitnessCoaches.size());
+		
+		// Initialize the Coach that will be booked
+		FitnessCoach coachToBook = fitnessCoaches.iterator().next();
+		
+		for (FitnessCoach fitnessCoach : fitnessCoaches) {
+			// Checks the if the counter has reached the random index generated
+			// and checks to see if that Coach is booked
+			if ((count == random_fitnessCoach_index) && (coachToBook.isBooked())) {
+				// Random Coach is set to the coachToBook variable
+				coachToBook = fitnessCoach;
+			}
+			else {
+				count++;
 			}
 		}
-		return null;
-		*/
+		
+		// Sets the status of the coach that was chosen randomly to true
+		coachToBook.setBooked(booked);
+		
+		return new GymFitnessCoach(fitnessCoachDao.save(coachToBook));
+	}
+
+	public List<GymFitnessCoach> retrieveAllFitnessCoachesByGymId(Long gymId) {
+		Gym gym = findOrCreateGym(gymId);
+		Set<FitnessCoach> fitnessCoaches = gym.getFitnessCoaches();
+		List<GymFitnessCoach> result = new LinkedList<>();
+		
+		for (FitnessCoach fitnessCoach : fitnessCoaches) {
+			GymFitnessCoach gymFitnessCoach = new GymFitnessCoach(fitnessCoach);
+			
+			result.add(gymFitnessCoach);
+			
+		}
+		return result;
 	}
 	
+	/*
+	 * 	 * Retrieve all gyms
+	 
+	@Transactional(readOnly = true)
+	public List<GymData> retrieveAllGyms() {
+		// TODO Auto-generated method stub
+		List<Gym> gyms = gymDao.findAll();
+		List<GymData> result = new LinkedList<>();
+		
+		// Generates a list of all the gyms to retrieve
+		for (Gym gym : gyms) {
+			GymData gymData = new GymData(gym);
+			
+			gymData.getMembers().clear();
+			gymData.getFitnessCoaches().clear();
+			
+			result.add(gymData);
+		}
+		
+		return result;
+	}
+	 */
 	
 }
